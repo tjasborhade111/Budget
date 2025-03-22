@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budgeting Tool</title>
+  <style>
+  /* Blue & White Color Palette */
+:root {
+  --primary: #007bff; /* Blue */
+  --secondary: #5471f1; /* Dark Text */
+  --light: #ffffff; /* White */
+  --danger: #dc3545; /* Red for danger */
+  --success: #28a745; /* Green for success */
+  --gray: #f8f9fa; /* Light Gray */
+  --background: #f0f8ff; /* Light Blue background */
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  padding: 2rem;
+  background: var(--light);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+}
+
+h1 {
+  color: var(--primary);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* Form Styling */
+#transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+input, textarea {
+  padding: 0.8rem;
+  border: 2px solid var(--gray);
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+button {
+  background: var(--primary);
+  color: var(--light);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: var(--success);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+}
+
+/* Transaction Container */
+#transaction-container {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.transaction-group {
+  background: var(--light);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(96, 86, 248, 0.05);
+}
+
+.transaction-group p {
+  margin: 0.5rem 0;
+  color: var(--secondary);
+}
+
+.transaction-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.view-chart-btn {
+  background-color: var(--secondary);
+  color: var(--light);
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.view-chart-btn:hover {
+  background-color: var(--primary);
+}
+
+.delete-btn {
+  background: var(--danger);
+  padding: 0.8rem 1.5rem;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+/* Chart Styling */
+.transaction-chart-container {
+  width: 100%;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+canvas {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(77, 66, 226, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  input, textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Budgeting Tool</h1>
+    <form id="transaction-form">
+      <input type="text" id="description" placeholder="Names separated by commas" />
+      <input type="number" id="amount" placeholder="Total Amount" required />
+      <textarea id="individual-contributions" placeholder="Individual Contributions (e.g.,name-ruppes)"></textarea>
+      <button type="submit">Add Transaction</button>
+    </form>
+    <div id="transaction-container"></div>
+    <div class="transaction-chart-container">
+      <canvas id="budget-chart"></canvas>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
