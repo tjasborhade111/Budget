@@ -170,6 +170,13 @@ function renderChart(transactionId, canvas) {
     },
   });
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("Page Loaded!");
+        // Call your main function here
+    });
+</script>
+
 
 // Initialize App
 document.addEventListener("DOMContentLoaded", loadTransactions);
