@@ -151,31 +151,21 @@ function toggleChart(transactionId) {
 // Render Chart for Individual Transaction
 function renderChart(transactionId, canvas) {
   const ctx = canvas.getContext("2d");
+  if (canvas.chart) {
+    canvas.chart.destroy();
+  }
   const transaction = transactions.find((t) => t.id === transactionId);
+  const labels = transaction.contributors.map((c) => c.name);
+  const data = transaction.contributors.map((c) => c.amount);
 
-  const labels = transaction.contributors.map((contributor) => contributor.name);
-  const data = transaction.contributors.map((contributor) => contributor.amount);
-
-  new Chart(ctx, {
+  canvas.chart = new Chart(ctx, {
     type: "pie",
     data: {
       labels,
-      datasets: [
-        {
-          label: "Amount Distribution",
-          data,
-          backgroundColor: ["#2ecc71", "#3498db", "#e74c3c", "#f1c40f"],
-        },
-      ],
+      datasets: [{ data, backgroundColor: ["#2ecc71", "#3498db", "#e74c3c", "#f1c40f"] }],
     },
   });
 }
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("Page Loaded!");
-        // Call your main function here
-    });
-</script>
 
 
 // Initialize App
