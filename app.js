@@ -37,27 +37,50 @@ function addTransaction(description, amount, contributions) {
 
 // Parse Contributions
 function parseContributions(contributionsStr, amount, description) {
-  if (!contributionsStr) {
-    const names = description.split(",").map((name) => name.trim());
-    const eachAmount = (amount / names.length).toFixed(2);
+  let contributions = [];
+  let totalContributed = 0;
 
-    return {
-      contributions: names.map((name) => ({ name, amount: eachAmount })),
-      totalContributed: parseFloat(amount),
-    };
+  if (contributionsStr) {
+    contributions = contributionsStr.split(",").map((item) => {
+      const [name, amt] = item.split("-").map((val) => val.trim());
+      const parsedAmt = parseFloat(amt);
+      if (!name || isNaN(parsedAmt)) {
+        throw new Error("Invalid format. Use 'Name-Amount'.");
+      }
+      totalContributed += parsedAmt;
+      return { name, amount: parsedAmt };
+    });
+  } else {
+    const names = description.split(",").map((n) => n.trim());
+    const splitAmt = amount / names.length;
+    contributions = names.map((name) => ({ name, amount: parseFloat(splitAmt.toFixed(2)) }));
+    totalContributed = amount;
+    return { contributions, totalContributed };
   }
 
-  const contributions = contributionsStr.split(",").map((item) => {
-    const [name, amount] = item.split("-").map((val) => val.trim());
-    if (!name || isNaN(amount)) {
-      throw new Error("Invalid contribution format. Use 'Name-Amount'.");
-    }
-    return { name, amount };
-  });
+  if (totalContributed < amount) {
+    const remaining = amount - totalContributed;
 
-  const totalContributed = contributions.reduce((sum, contrib) => sum + parseFloat(contrib.amount), 0);
+    // Get unique contributor names
+    const existingNames = contributions.map((c) => c.name.toLowerCase());
+    const allNames = description.split(",").map((n) => n.trim());
+
+    const missingNames = allNames.filter((name) => !existingNames.includes(name.toLowerCase()));
+
+    if (missingNames.length === 0) {
+      throw new Error("Total contribution is less than required, and no new names to split the remaining amount.");
+    }
+
+    const splitAmount = parseFloat((remaining / missingNames.length).toFixed(2));
+    missingNames.forEach((name) => {
+      contributions.push({ name, amount: splitAmount });
+      totalContributed += splitAmount;
+    });
+  }
+
   return { contributions, totalContributed };
 }
+
 
 // Handle Form Submission
 transactionForm.addEventListener("submit", (e) => {
